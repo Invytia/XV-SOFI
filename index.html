@@ -4,17 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis XV Años - Sofi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Pinyon+Script&family=Montserrat:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Pinyon+Script&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,600&display=swap" rel="stylesheet">
     <style>
         :root {
             /* Paleta Mágica Rapunzel */
-            --bg-pearl: #FDFBFD;       
-            --lilac-subtle: #F0E6F6;    
-            --lilac-medium: #DCD0E6;    
-            --gold-magic: #DDAF56; 
-            --text-dark: #3A2E45;       
-            --text-muted: #7A6985;
-            --dark-magic: #21132B;
+            --gold-magic: #F9C351; 
+            --gold-glow: rgba(249, 195, 81, 0.7);
+            --text-dark: #2F1E3E;       
+            --text-muted: #644F75;
+            --dark-magic: #1D0F29;
             
             --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -28,32 +26,71 @@
         body, html {
             width: 100%;
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-pearl);
+            /* Fondo base de cielo nocturno para que las estrellas resalten */
+            background: linear-gradient(135deg, #160B24 0%, #2A1744 50%, #150A21 100%);
+            background-attachment: fixed;
             color: var(--text-dark);
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
-        /* --- EFECTO MÁGICO DE DESTELLOS FLOTANTES --- */
-        .sparkles-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1; overflow: hidden;
+        /* --- CONTENEDORES DE MAGIA (ESTRELLAS, LINTERNAS, FUGACES) --- */
+        #stars-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        
+        #lanterns-container, #shooting-stars-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; /* Sobre el contenido de la invitación */
+            overflow: hidden;
         }
 
-        .sparkle {
+        /* Estrellitas de fondo */
+        .star {
             position: absolute;
-            background-color: var(--gold-magic);
-            width: 4px; height: 4px; border-radius: 50%;
-            box-shadow: 0 0 10px 2px rgba(221, 175, 86, 0.6);
-            opacity: 0;
-            animation: floatSparkle 6s infinite ease-in-out;
+            background-color: #FFF;
+            border-radius: 50%;
+            animation: twinkle infinite alternate;
         }
 
-        @keyframes floatSparkle {
-            0% { opacity: 0; transform: translateY(0) scale(0.5); }
-            50% { opacity: 0.8; transform: translateY(-50px) scale(1.2); }
-            100% { opacity: 0; transform: translateY(-100px) scale(0.5); }
+        @keyframes twinkle {
+            0% { opacity: 0.1; transform: scale(0.8); }
+            100% { opacity: 0.9; transform: scale(1.2); box-shadow: 0 0 5px 1px #FFF; }
+        }
+
+        /* Lluvia de estrellas fugaces */
+        .shooting-star {
+            position: absolute;
+            width: 100px; height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,1), transparent);
+            opacity: 0;
+            transform: rotate(-45deg);
+            animation: shoot linear infinite;
+        }
+
+        @keyframes shoot {
+            0% { transform: translate(100vw, -20vh) rotate(-45deg); opacity: 1; }
+            20% { transform: translate(-20vw, 100vh) rotate(-45deg); opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* Linternas flotantes estilo Rapunzel */
+        .lantern {
+            position: absolute;
+            width: 14px; height: 20px;
+            background: linear-gradient(180deg, #FFE885 0%, #FFB72B 100%);
+            border-radius: 3px 3px 2px 2px;
+            box-shadow: 0 0 15px 5px var(--gold-glow), inset 0 -2px 5px #E65C00;
+            opacity: 0;
+            animation: floatLantern linear infinite;
+        }
+
+        @keyframes floatLantern {
+            0% { transform: translateY(110vh) translateX(0) scale(0.8); opacity: 0; }
+            10% { opacity: 0.9; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) translateX(30px) scale(1.1); opacity: 0; }
         }
 
         /* --- REPRODUCTOR DE MÚSICA (STICKY) --- */
@@ -63,8 +100,8 @@
             background-color: var(--gold-magic);
             border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 10px 25px rgba(221, 175, 86, 0.5);
-            z-index: 2000; cursor: pointer;
+            box-shadow: 0 10px 25px var(--gold-glow);
+            z-index: 10000; cursor: pointer;
             opacity: 0; visibility: hidden;
             transform: translateY(20px) scale(0.9);
             transition: all 0.6s var(--transition-smooth);
@@ -76,7 +113,7 @@
         }
 
         .sticky-music-btn:hover {
-            transform: scale(1.1); background-color: #C59A44;
+            transform: scale(1.1); background-color: #E5A932;
         }
 
         .sticky-music-btn svg { width: 18px; height: 18px; fill: #fff; }
@@ -84,20 +121,13 @@
         /* --- SOBRE MÁGICO --- */
         #envelope-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* FONDO SOLICITADO */
             background-image: url('assets/fondo.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-color: var(--bg-pearl); 
+            background-color: #160B24; /* Color de respaldo */
             z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: opacity 1.2s ease-in-out, visibility 1.2s;
-        }
-
-        /* Capa oscura semitransparente por si el fondo.jpg es muy claro y no deja ver el sobre */
-        #envelope-screen::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.3); pointer-events: none; z-index: 0;
         }
 
         #envelope-screen.fade-out {
@@ -111,15 +141,15 @@
         }
 
         .env-tag {
-            font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 8px;
-            text-transform: uppercase; color: var(--text-dark); font-weight: 600;
-            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
+            font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 8px;
+            text-transform: uppercase; color: #FFF; font-weight: 600;
+            text-shadow: 0 3px 8px rgba(0,0,0,0.6);
         }
 
         .env-title {
-            font-family: 'Pinyon Script', cursive; font-size: 85px;
-            color: var(--text-dark); line-height: 1.2; margin-top: 5px;
-            text-shadow: 0 2px 10px rgba(255,255,255,0.8);
+            font-family: 'Pinyon Script', cursive; font-size: 95px;
+            color: #FFF; line-height: 1.2; margin-top: 5px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 20px var(--gold-glow);
         }
 
         .envelope-wrapper {
@@ -133,14 +163,14 @@
         .envelope {
             position: relative; width: 320px; height: 210px;
             background-color: #FFFFFF; border-radius: 2px;
-            box-shadow: 0 15px 40px rgba(58, 46, 69, 0.15); 
-            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); 
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .envelope::before {
             content: ''; position: absolute; top: 0; right: 0;
-            border-right: 160px solid #FDFBFF; border-top: 105px solid transparent;
-            border-bottom: 105px solid #FDFBFF; z-index: 2;
+            border-right: 160px solid #F8F8F8; border-top: 105px solid transparent;
+            border-bottom: 105px solid #F8F8F8; z-index: 2;
         }
         
         .envelope::after {
@@ -152,9 +182,9 @@
         .front-flap {
             position: absolute; top: 0; left: 0;
             border-left: 160px solid transparent; border-right: 160px solid transparent;
-            border-top: 115px solid #F6F3F9; transform-origin: top;
+            border-top: 115px solid #F2F2F2; transform-origin: top;
             transition: transform 0.9s var(--transition-smooth); z-index: 4;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
 
         .envelope-wrapper.open .front-flap { transform: rotateX(180deg); z-index: 1; }
@@ -163,7 +193,7 @@
             position: absolute; top: 90px; left: 50%; transform: translateX(-50%);
             width: 45px; height: 45px; background-color: var(--gold-magic);
             border-radius: 50%; z-index: 5; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(221, 175, 86, 0.4); 
+            box-shadow: 0 4px 15px var(--gold-glow); 
             transition: opacity 0.5s ease 0.1s, transform 0.5s ease;
         }
         
@@ -172,8 +202,8 @@
 
         .hint-text {
             text-align: center; font-size: 11px; font-weight: 600; text-transform: uppercase; 
-            letter-spacing: 4px; color: var(--text-dark); margin-top: 40px; 
-            animation: pulse 2.5s infinite; text-shadow: 0 1px 3px rgba(255,255,255,0.8);
+            letter-spacing: 4px; color: #FFF; margin-top: 40px; 
+            animation: pulse 2.5s infinite; text-shadow: 0 2px 5px rgba(0,0,0,0.8);
         }
 
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
@@ -183,58 +213,52 @@
         #main-invitation {
             display: none; width: 100%; flex-direction: column; align-items: center;
             opacity: 0; animation: fadeInMain 2s forwards 0.3s;
-            position: relative; z-index: 2;
+            position: relative; z-index: 2; /* Sobre las estrellas base, debajo de linternas */
         }
         
         body.content-active #main-invitation { display: flex; }
 
         @keyframes fadeInMain { to { opacity: 1; } }
 
-        /* Clases de Animación */
         .anim-element { opacity: 0; transition: all 1.2s var(--transition-smooth); position: relative; z-index: 2; }
         .anim-fade-up { transform: translateY(40px); }
         .anim-fade-up.in-view { opacity: 1; transform: translateY(0); }
         .anim-zoom { transform: scale(0.92); }
         .anim-zoom.in-view { opacity: 1; transform: scale(1); }
 
-        /* Delays */
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.25s; }
         .delay-3 { transition-delay: 0.4s; }
         .delay-4 { transition-delay: 0.55s; }
 
-        /* Estructura de Secciones */
+        /* Estructura de Secciones (Ahora translúcidas para que se vea la noche estrellada detrás) */
         .section-block {
             width: 100%; padding: 110px 20px; display: flex; flex-direction: column; align-items: center; text-align: center;
             position: relative; overflow: hidden;
+            backdrop-filter: blur(5px); /* Efecto cristal para la noche estrellada */
         }
 
-        .bg-pearl { background-color: var(--bg-pearl); }
-        .bg-lilac-light { background-color: var(--lilac-subtle); }
-        .bg-lilac-dark { background-color: var(--lilac-medium); }
-        .bg-magic-dark { background-color: var(--dark-magic); color: #ffffff; }
-
-        /* DECORACIONES MAGICAS (Puedes usar PNGs de brillos, soles de Rapunzel o flores lilas) */
-        .floral-img {
-            position: absolute; pointer-events: none; z-index: 0; opacity: 0.6; max-width: 180px;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05)); transition: opacity 1.5s ease;
-        }
+        /* Colores translúcidos */
+        .bg-pearl { background-color: rgba(253, 251, 253, 0.90); }
+        .bg-lilac-light { background-color: rgba(240, 230, 246, 0.90); }
+        .bg-lilac-dark { background-color: rgba(224, 211, 235, 0.90); }
+        .bg-magic-dark { background-color: rgba(33, 19, 43, 0.92); color: #ffffff; }
 
         /* Tipografía Editorial */
         .tag-line {
             font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 5px;
-            text-transform: uppercase; color: var(--gold-magic); margin-bottom: 25px; font-weight: 500;
+            text-transform: uppercase; color: #D19A26; margin-bottom: 25px; font-weight: 600;
         }
 
         .title-script {
-            font-family: 'Pinyon Script', cursive; font-size: 90px;
+            font-family: 'Pinyon Script', cursive; font-size: 95px;
             color: var(--text-dark); margin-bottom: 20px; line-height: 1.1; font-weight: 400;
         }
 
         .body-serif {
             font-family: 'Cormorant Garamond', serif; font-size: 24px;
             line-height: 1.6; color: var(--text-muted); font-style: italic;
-            max-width: 650px; padding: 0 15px; font-weight: 400;
+            max-width: 650px; padding: 0 15px; font-weight: 500;
         }
 
         .bg-magic-dark .title-script, .bg-magic-dark .body-serif { color: #ffffff; }
@@ -245,22 +269,22 @@
         /* Imágenes */
         .photo-frame {
             width: 100%; max-width: 420px; margin: 40px auto;
-            box-shadow: 0 20px 50px rgba(58, 46, 69, 0.15); border-radius: 4px;
-            overflow: hidden; border: 4px solid #FFFFFF; position: relative; z-index: 2;
+            box-shadow: 0 20px 50px rgba(47, 30, 62, 0.2); border-radius: 6px;
+            overflow: hidden; border: 5px solid #FFFFFF; position: relative; z-index: 2;
         }
-        .bg-magic-dark .photo-frame { border-color: #38254A; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
-        .photo-frame img { width: 100%; display: block; filter: contrast(1.05) saturate(1.05); transition: transform 0.6s ease; }
+        .bg-magic-dark .photo-frame { border-color: #3B2452; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .photo-frame img { width: 100%; display: block; filter: contrast(1.05) saturate(1.1); transition: transform 0.6s ease; }
         .photo-frame:hover img { transform: scale(1.03); }
 
         /* Información Textual */
         .info-title {
             font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; line-height: 1.4;
-            text-transform: uppercase; color: var(--gold-magic); margin-bottom: 12px; font-weight: 500;
+            text-transform: uppercase; color: #D19A26; margin-bottom: 12px; font-weight: 600;
         }
 
         .info-data {
-            font-family: 'Cormorant Garamond', serif; font-size: 34px;
-            color: var(--text-dark); margin-bottom: 5px; font-weight: 400; line-height: 1.3;
+            font-family: 'Cormorant Garamond', serif; font-size: 36px;
+            color: var(--text-dark); margin-bottom: 5px; font-weight: 600; line-height: 1.3;
         }
 
         .bg-magic-dark .info-data { color: #ffffff; }
@@ -269,18 +293,18 @@
         .btn-solid {
             display: inline-block; background-color: var(--gold-magic); color: #fff;
             padding: 17px 35px; font-family: 'Montserrat', sans-serif; font-size: 12px;
-            font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
-            text-decoration: none; border: none; cursor: pointer; border-radius: 30px; /* Bordes más suaves */
+            font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+            text-decoration: none; border: none; cursor: pointer; border-radius: 30px; 
             transition: all 0.4s ease; margin-top: 30px; position: relative; z-index: 5;
-            box-shadow: 0 8px 20px rgba(221, 175, 86, 0.3);
+            box-shadow: 0 8px 20px var(--gold-glow);
         }
         
-        .btn-solid:hover { background-color: #C59A44; transform: translateY(-3px); box-shadow: 0 12px 25px rgba(221, 175, 86, 0.5); }
+        .btn-solid:hover { background-color: #E5A932; transform: translateY(-3px); box-shadow: 0 12px 25px var(--gold-glow); }
 
         /* Widget de Calendario */
         .calendar-wrapper {
             width: 100%; max-width: 340px; margin: 40px auto; padding: 35px 25px;
-            background: #fff; border-radius: 8px; box-shadow: 0 15px 45px rgba(58, 46, 69, 0.08);
+            background: #fff; border-radius: 8px; box-shadow: 0 15px 45px rgba(47, 30, 62, 0.1);
             box-sizing: border-box; border: 1px solid rgba(0,0,0,0.03); position: relative; z-index: 2;
         }
 
@@ -296,40 +320,40 @@
 
         .cal-header {
             font-family: 'Montserrat', sans-serif; font-size: clamp(10px, 3vw, 12px);
-            font-weight: 600; color: var(--gold-magic); padding-bottom: 12px;
+            font-weight: 600; color: #D19A26; padding-bottom: 12px;
         }
 
         .cal-day {
             font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 4.5vw, 20px);
-            font-weight: 500; color: var(--text-muted); display: flex; justify-content: center; align-items: center;
+            font-weight: 600; color: var(--text-muted); display: flex; justify-content: center; align-items: center;
             aspect-ratio: 1;
         }
 
         .cal-day.active {
             background-color: var(--gold-magic); color: #fff; border-radius: 50%; 
-            font-weight: 600; box-shadow: 0 4px 12px rgba(221, 175, 86, 0.4);
+            font-weight: 700; box-shadow: 0 4px 12px var(--gold-glow);
         }
 
         /* Mapas */
         .map-box {
             width: 100%; max-width: 550px; height: 320px; margin: 30px auto;
-            overflow: hidden; border-radius: 8px; box-shadow: 0 15px 40px rgba(58, 46, 69, 0.1); position: relative; z-index: 2;
+            overflow: hidden; border-radius: 8px; box-shadow: 0 15px 40px rgba(47, 30, 62, 0.15); position: relative; z-index: 2;
         }
         
-        .map-box iframe { width: 100%; height: 100%; border: none; filter: contrast(1.05) hue-rotate(270deg); /* Hue ajustado sutilmente para que los mapas combinen con tonos lila */ }
+        .map-box iframe { width: 100%; height: 100%; border: none; filter: contrast(1.05) hue-rotate(270deg); }
 
         /* Formularios Finos */
         .form-group { width: 100%; max-width: 400px; margin: 0 auto 20px auto; position: relative; z-index: 2; }
         
         .input-line {
             width: 100%; padding: 18px 0; background: transparent; border: none;
-            border-bottom: 1px solid rgba(58, 46, 69, 0.2); color: var(--text-dark);
-            font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 400; outline: none;
+            border-bottom: 1px solid rgba(47, 30, 62, 0.3); color: var(--text-dark);
+            font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 500; outline: none;
             text-align: center; transition: border-color 0.4s;
         }
         .input-line:focus { border-bottom-color: var(--gold-magic); }
-        .input-line::placeholder { color: #A0A0A0; font-style: normal; }
-        .input-line:disabled { color: var(--gold-magic); background-color: rgba(255,255,255,0.5); cursor: not-allowed; font-weight: 600; border-radius: 4px; }
+        .input-line::placeholder { color: #8A7A99; font-style: normal; }
+        .input-line:disabled { color: var(--gold-magic); background-color: rgba(255,255,255,0.6); cursor: not-allowed; font-weight: 600; border-radius: 6px; }
         
         textarea.input-line { resize: vertical; min-height: 90px; }
         select.input-line { appearance: none; text-align-last: center; cursor: pointer; }
@@ -338,23 +362,23 @@
         .ticket-card {
             width: 100%; max-width: 380px; margin: 30px auto; background-color: #fff;
             padding: 50px 25px; position: relative; text-align: center;
-            border-radius: 12px; box-shadow: 0 15px 40px rgba(58, 46, 69, 0.1);
+            border-radius: 12px; box-shadow: 0 15px 40px rgba(47, 30, 62, 0.15);
             border: 1px solid rgba(0,0,0,0.03); z-index: 2;
         }
 
         .ticket-card::before, .ticket-card::after {
             content: ''; position: absolute; top: 60%; transform: translateY(-50%);
-            width: 30px; height: 30px; background-color: var(--lilac-subtle); border-radius: 50%;
+            width: 30px; height: 30px; background-color: rgba(224, 211, 235, 1); border-radius: 50%;
         }
         .ticket-card::before { left: -15px; }
         .ticket-card::after { right: -15px; }
 
         /* Responsive Móvil */
         @media (max-width: 400px) {
-            .env-title { font-size: 70px; }
-            .title-script { font-size: 75px; }
-            .section-block { padding: 80px 15px; }
-            .info-data { font-size: 28px; }
+            .env-title { font-size: 80px; }
+            .title-script { font-size: 85px; }
+            .section-block { padding: 90px 15px; }
+            .info-data { font-size: 30px; }
             .map-box { height: 260px; }
             .envelope { width: 300px; height: 195px; }
             .envelope::before, .envelope::after { border-left-width: 150px; border-right-width: 150px; border-top-width: 97px; border-bottom-width: 97px; }
@@ -364,8 +388,10 @@
 </head>
 <body>
 
-    <!-- SISTEMA DE DESTELLOS MÁGICOS DE FONDO -->
-    <div class="sparkles-container" id="sparkles-container"></div>
+    <!-- CAPAS MÁGICAS (Estrellas, Linternas, Fugaces) -->
+    <div id="stars-bg"></div>
+    <div id="shooting-stars-container"></div>
+    <div id="lanterns-container"></div>
 
     <!-- AUDIO OCULTO -->
     <audio id="bg-music" src="assets/song.mp3" loop></audio>
@@ -386,7 +412,7 @@
         <div class="envelope-wrapper" onclick="openEnvelope()">
             <div class="front-flap"></div>
             <div class="wax-seal">
-                <!-- Ícono de Sol / Flor mágica sugerido -->
+                <!-- Ícono de Sol Mágico -->
                 <svg viewBox="0 0 24 24"><path d="M12 2L15 9H22L16.5 13.5L18.5 21L12 17L5.5 21L7.5 13.5L2 9H9L12 2Z"/></svg>
             </div>
             <div class="envelope"></div>
@@ -407,7 +433,6 @@
                 "Gracias por estar aquí, por su amor sincero y por ser parte de mi historia."
             </p>
             <div class="anim-element anim-fade-up delay-4 photo-frame">
-                <!-- Se recomienda usar fotos con estilo mágico/iluminado -->
                 <img src="assets/foto1.jpg" alt="Sofi" onerror="this.style.display='none'">
             </div>
         </section>
@@ -415,14 +440,13 @@
         <!-- Fecha y Calendario (Foto 5) -->
         <section class="section-block bg-lilac-light">
             <div class="anim-element anim-fade-up delay-1 info-title" style="letter-spacing: 2px;">Será un honor contar con tu presencia el</div>
-            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 40px; font-weight: 500;">14 de Noviembre</div>
-            <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 24px; color: var(--gold-magic); letter-spacing: 2px;">2026</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 44px;">14 de Noviembre</div>
+            <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 26px; color: #D19A26; letter-spacing: 2px;">2026</div>
 
             <div class="anim-element anim-zoom delay-4 calendar-wrapper">
                 <div class="calendar-month">Noviembre</div>
                 <div class="calendar-grid">
                     <div class="cal-header">D</div><div class="cal-header">L</div><div class="cal-header">M</div><div class="cal-header">M</div><div class="cal-header">J</div><div class="cal-header">V</div><div class="cal-header">S</div>
-                    <!-- Nov 2026 inicia en Domingo -->
                     <div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div>
                     <div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div><div class="cal-day active">14</div>
                     <div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div>
@@ -446,9 +470,9 @@
             <div class="anim-element anim-zoom delay-4 line-horizontal"></div>
             
             <div class="anim-element anim-fade-up delay-4 info-title">Y mis Padrinos</div>
-            <div class="anim-element anim-fade-up delay-4 info-data" style="font-size: 28px;">Fernández Cervantes Barrera</div>
-            <div class="anim-element anim-fade-up delay-4" style="font-family: 'Cinzel', serif; font-size: 16px; color: var(--gold-magic); margin: 8px 0;">&</div>
-            <div class="anim-element anim-fade-up delay-4 info-data" style="font-size: 28px;">Guadalupe Altamirano</div>
+            <div class="anim-element anim-fade-up delay-4 info-data" style="font-size: 30px;">Fernández Cervantes Barrera</div>
+            <div class="anim-element anim-fade-up delay-4" style="font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold-magic); margin: 10px 0;">&</div>
+            <div class="anim-element anim-fade-up delay-4 info-data" style="font-size: 30px;">Guadalupe Altamirano</div>
 
             <div class="anim-element anim-fade-up delay-4 photo-frame" style="margin-top: 70px;">
                 <img src="assets/foto2.jpg" alt="Familia" onerror="this.style.display='none'">
@@ -495,7 +519,7 @@
                 FORMAL &<br>ELEGANTE
             </div>
             <div class="anim-element anim-fade-up delay-3 line-divider" style="background-color: var(--gold-magic); height: 40px;"></div>
-            <p class="anim-element anim-fade-up delay-4 body-serif" style="color: #DCD0E6; font-size: 20px;">
+            <p class="anim-element anim-fade-up delay-4 body-serif" style="color: #E0D3EB; font-size: 21px;">
                 Para esta noche tan especial, queremos que luzcan increíbles:<br>
                 <strong>Mujeres divinas y hombres súper guapos.</strong>
                 <br><br>
@@ -511,17 +535,16 @@
         <section class="section-block bg-pearl">
             <div class="anim-element anim-fade-up delay-1 info-title">Mesa de Regalos</div>
             <svg class="anim-element anim-zoom delay-2" viewBox="0 0 24 24" style="width: 50px; height: 50px; fill: var(--gold-magic); margin: 20px 0; position: relative; z-index: 2;">
-                <!-- Icono de Regalo -->
                 <path d="M22 6h-4.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.08 0-2.03.55-2.58 1.38L12 4.16l-.42-.78C11.03 2.55 10.08 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H2v3h2v11h16V9h2V6zm-7-2c.55 0 1 .45 1 1s-.45 1-1 1h-2.54l1.3-1.87c.29-.08.71-.13 1.24-.13zM9 4c.53 0 .95.05 1.24.13L11.54 6H9c-.55 0-1-.45-1-1s.45-1 1-1zm-3 5h5v11H6V9zm12 11h-5V9h5v11z"/>
             </svg>
             <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 34px;">Liverpool</div>
-            <p class="anim-element anim-fade-up delay-4 body-serif" style="margin-top: 20px; font-size: 20px;">
+            <p class="anim-element anim-fade-up delay-4 body-serif" style="margin-top: 20px; font-size: 21px;">
                 El obsequio más hermoso es tu presencia. Si deseas tener un detalle adicional, he preparado una mesa de regalos en Liverpool.
             </p>
 
-            <div class="anim-element anim-fade-up delay-4" style="margin-top: 30px; font-family: 'Montserrat', sans-serif; font-size: 15px; color: var(--text-dark); border: 1px solid rgba(58,46,69,0.1); padding: 30px; border-radius: 8px; background: #fff; max-width: 400px; width: 100%; position: relative; z-index: 2; box-shadow: 0 10px 30px rgba(58,46,69,0.05);">
-                <div style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; color: var(--text-muted); letter-spacing: 2px;">Número de Evento</div>
-                <div style="margin-bottom: 25px; font-size: 24px; font-weight: 600; color: var(--gold-magic);">60027354</div>
+            <div class="anim-element anim-fade-up delay-4" style="margin-top: 30px; font-family: 'Montserrat', sans-serif; font-size: 15px; color: var(--text-dark); border: 1px solid rgba(47,30,62,0.1); padding: 30px; border-radius: 8px; background: #fff; max-width: 400px; width: 100%; position: relative; z-index: 2; box-shadow: 0 10px 30px rgba(47,30,62,0.08);">
+                <div style="margin-bottom: 15px; text-transform: uppercase; font-size: 13px; color: var(--text-muted); letter-spacing: 2px; font-weight: 600;">Número de Evento</div>
+                <div style="margin-bottom: 25px; font-size: 26px; font-weight: 700; color: #D19A26;">60027354</div>
                 
                 <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/60027354" target="_blank" class="btn-solid" style="margin-top: 0; padding: 12px 25px; font-size: 11px;">Ver Mesa de Regalos</a>
             </div>
@@ -535,12 +558,12 @@
         <section class="section-block bg-lilac-light">
             <div class="anim-element anim-fade-up delay-1 info-title">Música</div>
             <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Nuestra Playlist Mágica</div>
-            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 20px auto 40px auto; font-size: 20px;">
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 20px auto 40px auto; font-size: 21px;">
                 Ayúdame a crear el ambiente perfecto agregando tus canciones favoritas para la pista de baile.
             </p>
             
             <div class="anim-element anim-zoom delay-4" style="width: 100%; max-width: 480px; position: relative; z-index: 2;">
-                <iframe data-testid="embed-iframe" style="border-radius:12px; box-shadow: 0 15px 40px rgba(0,0,0,0.1);" src="https://open.spotify.com/embed/playlist/2hRG7iWqaUP0l53cgYVjSN?utm_source=generator&si=6f7c1781f03e43fe" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe data-testid="embed-iframe" style="border-radius:12px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);" src="https://open.spotify.com/embed/playlist/2hRG7iWqaUP0l53cgYVjSN?utm_source=generator&si=6f7c1781f03e43fe" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
             
             <a href="https://open.spotify.com/playlist/2hRG7iWqaUP0l53cgYVjSN?si=0120d0bdab174094&pt=15cd80af53e2d64489a80c6d4b6ff3d1" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Agregar Canciones</a>
@@ -554,9 +577,9 @@
         <section class="section-block bg-pearl">
             <div class="anim-element anim-fade-up delay-1 info-title">Recuerdos</div>
             <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Galería en Vivo</div>
-            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 25px auto; font-size: 20px;">
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 25px auto; font-size: 21px;">
                 Captura la magia de esta noche. Comparte todas las fotos y videos que tomes directamente en nuestro álbum digital.<br><br>
-                <span style="font-size: 14px; font-family: 'Montserrat', sans-serif; font-style: normal; font-weight: 500; color: var(--text-muted);">
+                <span style="font-size: 14px; font-family: 'Montserrat', sans-serif; font-style: normal; font-weight: 600; color: var(--text-muted);">
                     Te sugerimos tener instalada la app de <strong>Google Drive</strong> para subir tus archivos fácilmente.
                 </span>
             </p>
@@ -569,7 +592,6 @@
 
         <!-- RSVP y Pases (Foto 9 y 10) -->
         <section class="section-block bg-lilac-dark">
-            <!-- Foto 9 Antes del Formulario -->
             <div class="anim-element anim-fade-up delay-1 photo-frame" style="margin-bottom: 70px; margin-top: 0;">
                 <img src="assets/foto9.jpg" alt="Detalles" onerror="this.style.display='none'">
             </div>
@@ -578,17 +600,17 @@
             <div id="pases-section" style="display: none; width: 100%;">
                 <div class="anim-element anim-fade-up delay-1 info-title">Acceso al Evento</div>
                 <div class="anim-element anim-zoom delay-2 ticket-card">
-                    <div class="tag-line" style="margin-bottom: 20px; color: var(--gold-magic);">Boleto Especial</div>
+                    <div class="tag-line" style="margin-bottom: 20px; color: #D19A26;">Boleto Especial</div>
                     
-                    <div id="ticket-name" style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--text-dark); font-style: italic; margin-bottom: 15px; font-weight: 600; line-height: 1.2;">
+                    <div id="ticket-name" style="font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--text-dark); font-style: italic; margin-bottom: 15px; font-weight: 600; line-height: 1.2;">
                         Invitado de Honor
                     </div>
 
-                    <div class="body-serif" style="font-size: 19px; margin-bottom: 15px; color: var(--text-muted);">Pases Asignados</div>
-                    <div id="ticket-count" style="font-family: 'Cinzel', serif; font-size: 60px; font-weight: 500; color: var(--gold-magic); line-height: 1;">
+                    <div class="body-serif" style="font-size: 20px; margin-bottom: 15px; color: var(--text-muted);">Pases Asignados</div>
+                    <div id="ticket-count" style="font-family: 'Cinzel', serif; font-size: 65px; font-weight: 600; color: #D19A26; line-height: 1;">
                         0
                     </div>
-                    <div style="font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-top: 35px;">
+                    <div style="font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-top: 35px;">
                         Muestra esta pantalla al llegar
                     </div>
                 </div>
@@ -598,7 +620,7 @@
             <!-- Formulario RSVP -->
             <div class="anim-element anim-fade-up delay-1 info-title">RSVP</div>
             <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Confirmar Asistencia</div>
-            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 15px auto 35px auto; font-size: 20px;">
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 15px auto 35px auto; font-size: 21px;">
                 Agradeceremos tu confirmación lo antes posible.
             </p>
             
@@ -613,11 +635,9 @@
                 </select>
             </div>
             
-            <!-- Campo dinámico de cantidad de pases -->
             <div class="anim-element anim-fade-up delay-4 form-group">
                 <select id="rsvp-guests" class="input-line" style="display: none;">
                     <option value="" disabled selected>¿Cuántas personas asisten?</option>
-                    <!-- Las opciones se generarán dinámicamente con JS -->
                 </select>
             </div>
             
@@ -646,22 +666,48 @@
     </main>
 
     <script>
-        // --- CREAR CHISPAS/DESTELLOS (Magia Rapunzel) ---
-        function createSparkles() {
-            const container = document.getElementById('sparkles-container');
-            const numSparkles = 25; // Cantidad de destellos
-            for (let i = 0; i < numSparkles; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.classList.add('sparkle');
-                // Posiciones y duraciones aleatorias
-                sparkle.style.left = Math.random() * 100 + 'vw';
-                sparkle.style.top = Math.random() * 100 + 'vh';
-                sparkle.style.animationDuration = (Math.random() * 4 + 3) + 's';
-                sparkle.style.animationDelay = (Math.random() * 5) + 's';
-                container.appendChild(sparkle);
+        // --- GENERADOR DE MAGIA (Rapunzel Sky) ---
+        function generateMagic() {
+            // 1. Estrellitas de fondo
+            const starsContainer = document.getElementById('stars-bg');
+            const numStars = 80;
+            for (let i = 0; i < numStars; i++) {
+                let star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = (Math.random() * 2) + 's';
+                starsContainer.appendChild(star);
+            }
+
+            // 2. Linternas Flotantes (En Primer Plano)
+            const lanternsContainer = document.getElementById('lanterns-container');
+            const numLanterns = 25;
+            for (let i = 0; i < numLanterns; i++) {
+                let lantern = document.createElement('div');
+                lantern.classList.add('lantern');
+                lantern.style.left = (Math.random() * 90 + 5) + 'vw'; // Evitar orillas
+                lantern.style.animationDuration = (Math.random() * 10 + 15) + 's'; // Subida lenta
+                lantern.style.animationDelay = (Math.random() * 20) + 's';
+                lanternsContainer.appendChild(lantern);
+            }
+
+            // 3. Estrellas Fugaces
+            const shootingContainer = document.getElementById('shooting-stars-container');
+            const numShooting = 6;
+            for (let i = 0; i < numShooting; i++) {
+                let shooting = document.createElement('div');
+                shooting.classList.add('shooting-star');
+                shooting.style.top = (Math.random() * 50) + 'vh';
+                shooting.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                shooting.style.animationDelay = (Math.random() * 15) + 's';
+                shootingContainer.appendChild(shooting);
             }
         }
-        createSparkles();
+        
+        generateMagic();
 
         // --- CONTROL DE AUDIO ---
         let isMusicPlaying = false;
@@ -719,21 +765,16 @@
             document.querySelectorAll('.anim-element').forEach(el => observer.observe(el));
         });
 
-        // --- LÓGICA DEL SISTEMA DE PASES (Adaptado a ?p=X) ---
+        // --- LÓGICA DEL SISTEMA DE PASES (?p= ) ---
         let pasesAsignados = 0;
         const urlParams = new URLSearchParams(window.location.search);
-        
-        // El número telefónico asignado para Sofi
         const currentPhoneNumber = "525532592917"; 
-
-        // Leer el parámetro ?p= o ?pases=
         let parametroPases = urlParams.get('p') || urlParams.get('pases');
 
         if (parametroPases && !isNaN(parametroPases)) {
             pasesAsignados = parseInt(parametroPases);
         }
 
-        // Mostrar boleto VIP si hay pases asignados en la URL
         if (pasesAsignados > 0) {
             const pasesSection = document.getElementById('pases-section');
             if (pasesSection) {
@@ -741,11 +782,9 @@
                 document.getElementById('ticket-count').innerText = pasesAsignados;
             }
         } else {
-            // Valor por defecto para el formulario si no usan el parámetro en la URL
             pasesAsignados = 10; 
         }
 
-        // Mostrar u ocultar el dropdown de cantidad de invitados según la respuesta
         const rsvpStatus = document.getElementById("rsvp-status");
         const rsvpGuests = document.getElementById("rsvp-guests");
 
@@ -758,7 +797,7 @@
                 }
             } else {
                 rsvpGuests.style.display = 'none';
-                rsvpGuests.value = ""; // Reset
+                rsvpGuests.value = "";
             }
         });
 
